@@ -32,7 +32,7 @@ const Login = () => {
                 password: values.password
             }).then((response) => {
                 setShowError(false);
-                localStorage.setItem("jwt", JSON.stringify(response.data));
+                localStorage.setItem("jwt", response.data.token);
                 navigate("/");
             }).catch((response) => {
                 setShowError(true);
