@@ -4,8 +4,12 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
+import Alert from 'react-bootstrap/Alert';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
+import {useNavigate} from "react-router-dom";
+import {useState} from "react";
 
 const SignupSchema = Yup.object().shape({
     username: Yup.string().required(),
@@ -14,13 +18,25 @@ const SignupSchema = Yup.object().shape({
 
 const Login = () => {
 
+    const navigate = useNavigate();
+    const [showError, setShowError] = useState(false);
+
     const formik = useFormik({
         initialValues: {
             username: '',
             password: ''
         },
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
+            axios.post('/api/v1/login', {
+                username: values.username,
+                password: values.password
+            }).then((response) => {
+                setShowError(false);
+                localStorage.setItem("jwt", JSON.stringify(response.data));
+                navigate("/");
+            }).catch((response) => {
+                setShowError(true);
+            });
         },
         validationSchema: SignupSchema
     });
@@ -30,6 +46,10 @@ const Login = () => {
             <Row className="justify-content-center">
                 <Col className="col-12 col-sm-auto">
                     <Form onSubmit={formik.handleSubmit}>
+                        <div>
+                            {showError ? <Alert variant="danger"> Неверные имя пользователя или пароль </Alert> : ''}
+                        </div>
+
                         <Form.Group className="mb-3">
                             <FloatingLabel label="Ваш ник" className="mb-3">
                                 <Form.Control type="text"
