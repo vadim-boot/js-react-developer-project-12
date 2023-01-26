@@ -5,7 +5,7 @@ import {useState, useEffect} from "react";
 import axios from "axios";
 
 const getAuthHeader = () => {
-    const token = JSON.parse(localStorage.getItem('jwt'));
+    const token = localStorage.getItem('jwt');
 
     if (token) {
         return { Authorization: `Bearer ${token}` };
