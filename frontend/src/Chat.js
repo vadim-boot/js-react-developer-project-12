@@ -26,7 +26,6 @@ const Chat = () => {
         fetchContent();
     }, []);
 
-    return content && <p>{content}</p>;
     return (
         <Container className="mt-4">
             <Row className="justify-content-center">
