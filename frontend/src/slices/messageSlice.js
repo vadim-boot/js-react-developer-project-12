@@ -8,11 +8,11 @@ const messageSlice = createSlice({
     initialState,
     reducers: {
         messageAdd: (state, action) => {
-            const {message} = action.payload;
+            const message = action.payload;
             state[message.id] = message;
         },
         messageRemove: (state, action) => {
-            const {id} = action.payload;
+            const id = action.payload;
             state = _.omit(state, [id]);
         },
     }
