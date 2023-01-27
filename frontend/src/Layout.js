@@ -5,7 +5,7 @@ import {Outlet} from "react-router-dom";
 const Layout = () => {
     return (
         <div>
-            <Navbar bg="light">
+            <Navbar className="shadow-sm navbar-expand-lg navbar-light bg-white">
                 <Container>
                     <Navbar.Brand>Hexlet Chat</Navbar.Brand>
                 </Container>

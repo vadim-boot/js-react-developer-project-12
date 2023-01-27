@@ -1,20 +1,27 @@
 import {useSelector} from "react-redux";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import Nav from 'react-bootstrap/Nav';
 
 const ChannelList = () => {
     const channels = useSelector(state => state.channel);
-    console.log(`channels = ${channels}`);
+
+    const navItems = Object.entries(channels).map(([k, v]) => (
+        <Nav.Item key={k}>
+            <Nav.Link className="w-100 rounded-0 text-start btn-secondary">
+                <span className="me-1">#</span>
+                {v.name}
+            </Nav.Link>
+        </Nav.Item>
+    ))
 
     return (
-        <Container className="mt-4">
-            <Row className="justify-content-center">
-                <Col className="col-12 col-sm-auto">
-                    <p align="center">{JSON.stringify(channels)}</p>
-                </Col>
-            </Row>
-        </Container>
+        <div>
+            <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
+                <span>Каналы</span>
+            </div>
+            <Nav className="flex-column nav-pills nav-fill px-2">
+                {navItems}
+            </Nav>
+        </div>
     )
 }
 
