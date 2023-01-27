@@ -5,6 +5,7 @@ import {useState, useEffect} from "react";
 import axios from "axios";
 import {useDispatch} from "react-redux";
 import {channelAdd} from "./slices/channelSlice";
+import ChannelList from "./ChannelList";
 
 const getAuthHeader = () => {
     const token = localStorage.getItem('jwt');
@@ -23,9 +24,7 @@ const Chat = () => {
         const fetchContent = async () => {
             const {data} = await axios.get('/api/v1/data', {headers: getAuthHeader()});
             setContent(data);
-            console.log(data)
             data.channels.forEach((channel) => {
-                console.log(channel);
                 dispatch(channelAdd(channel));
             })
         };
@@ -37,6 +36,7 @@ const Chat = () => {
             <Row className="justify-content-center">
                 <Col className="col-12 col-sm-auto">
                     <p align="center">{JSON.stringify(content)}</p>
+                    <ChannelList/>
                 </Col>
             </Row>
         </Container>
