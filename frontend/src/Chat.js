@@ -3,12 +3,14 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {useState, useEffect} from "react";
 import axios from "axios";
+import {useDispatch} from "react-redux";
+import {channelAdd, channelRemove} from "./slices/channelSlice";
 
 const getAuthHeader = () => {
     const token = localStorage.getItem('jwt');
 
     if (token) {
-        return { Authorization: `Bearer ${token}` };
+        return {Authorization: `Bearer ${token}`};
     }
 
     return {};
@@ -16,10 +18,14 @@ const getAuthHeader = () => {
 
 const Chat = () => {
 
+    const dispatch = useDispatch();
     const [content, setContent] = useState('');
     const fetchContent = async () => {
-        const { data } = await axios.get('/api/v1/data', { headers: getAuthHeader() });
+        const {data} = await axios.get('/api/v1/data', {headers: getAuthHeader()});
         setContent(data);
+        data.channels.forEach((channel) => {
+            dispatch(channelAdd(channel));
+        })
     };
     useEffect(() => {
 
