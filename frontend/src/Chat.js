@@ -17,7 +17,6 @@ const getAuthHeader = () => {
 };
 
 const Chat = () => {
-
     const dispatch = useDispatch();
     const [content, setContent] = useState('');
     useEffect(() => {
@@ -29,7 +28,7 @@ const Chat = () => {
             })
         };
         fetchContent();
-    }, []);
+    }, [dispatch]);
 
     return (
         <Container className="mt-4">
