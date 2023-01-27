@@ -1,7 +1,4 @@
-import {useSelector} from "react-redux";
-
 const MessageList = () => {
-    const messages = useSelector(state => state.message);
 
     return (
         <div className="d-flex flex-column h-100">

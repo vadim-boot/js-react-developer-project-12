@@ -1,7 +1,7 @@
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import {useState, useEffect} from "react";
+import {useEffect} from "react";
 import axios from "axios";
 import {useDispatch} from "react-redux";
 import {channelAdd} from "./slices/channelSlice";
@@ -20,11 +20,9 @@ const getAuthHeader = () => {
 
 const Chat = () => {
     const dispatch = useDispatch();
-    const [content, setContent] = useState('');
     useEffect(() => {
         const fetchContent = async () => {
             const {data} = await axios.get('/api/v1/data', {headers: getAuthHeader()});
-            setContent(data);
             data.channels.forEach((channel) => {
                 dispatch(channelAdd(channel));
             })
