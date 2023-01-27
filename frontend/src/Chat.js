@@ -23,7 +23,9 @@ const Chat = () => {
         const fetchContent = async () => {
             const {data} = await axios.get('/api/v1/data', {headers: getAuthHeader()});
             setContent(data);
+            console.log(data)
             data.channels.forEach((channel) => {
+                console.log(channel);
                 dispatch(channelAdd(channel));
             })
         };
