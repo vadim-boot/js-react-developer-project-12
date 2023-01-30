@@ -7,6 +7,7 @@ import {useDispatch} from "react-redux";
 import {channelAdd} from "./slices/channelSlice";
 import ChannelList from "./ChannelList";
 import MessageList from "./MessageList";
+import {messageAdd} from "./slices/messageSlice";
 
 const getAuthHeader = () => {
     const token = localStorage.getItem('jwt');
@@ -26,6 +27,7 @@ const Chat = () => {
             data.channels.forEach((channel) => {
                 dispatch(channelAdd(channel));
             })
+            data.messages.forEach((message) => dispatch(messageAdd(message)));
         };
         fetchContent();
     }, [dispatch]);

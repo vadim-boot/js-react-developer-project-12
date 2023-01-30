@@ -4,6 +4,7 @@ import Layout from "./Layout";
 import Login from "./Login";
 import Error404 from "./Error404";
 import Chat from "./Chat";
+import {ApiProvider} from "./ChatAPI";
 
 const PrivateRoute = ({children}) => {
     const location = useLocation();
@@ -16,20 +17,22 @@ const PrivateRoute = ({children}) => {
 
 const App = () => {
     return (
-        <BrowserRouter>
-            <div>
-                <Layout/>
-                <Routes>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/" element={(
-                        <PrivateRoute>
-                            <Chat/>
-                        </PrivateRoute>
-                    )}/>
-                    <Route path="*" element={<Error404/>}/>
-                </Routes>
-            </div>
-        </BrowserRouter>
+        <ApiProvider>
+            <BrowserRouter>
+                <div>
+                    <Layout/>
+                    <Routes>
+                        <Route path="/login" element={<Login/>}/>
+                        <Route path="/" element={(
+                            <PrivateRoute>
+                                <Chat/>
+                            </PrivateRoute>
+                        )}/>
+                        <Route path="*" element={<Error404/>}/>
+                    </Routes>
+                </div>
+            </BrowserRouter>
+        </ApiProvider>
     );
 }
 
