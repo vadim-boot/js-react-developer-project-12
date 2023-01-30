@@ -35,7 +35,7 @@ const ApiProvider = ({children}) => {
             socket.off('connect');
             socket.off('newMessage')
         };
-    }, []);
+    }, [dispatch]);
 
     return (
         <ApiContext.Provider value={{sendMessage}}>
