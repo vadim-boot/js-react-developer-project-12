@@ -2,7 +2,7 @@ import {useEffect} from "react";
 import {createContext} from "react";
 import io from 'socket.io-client'
 import {messageAdd} from "./slices/messageSlice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 const ApiContext = createContext({});
 const socket = io();
@@ -10,12 +10,12 @@ const socket = io();
 const ApiProvider = ({children}) => {
 
     const dispatch = useDispatch();
+    const currentChannelId = useSelector(state => state.channelsInfo.currentChannelId);
 
     const sendMessage = (message, sendCallback) => {
         socket.emit('newMessage',
-            {'body': message, 'channelId': 1, 'username': 'admin'},
+            {'body': message, 'channelId': currentChannelId, 'username': 'admin'},
             (response) => {
-                console.log(`response.status = ${response.status}`);
                 if (response.status === 'ok') {
                     sendCallback();
                 }

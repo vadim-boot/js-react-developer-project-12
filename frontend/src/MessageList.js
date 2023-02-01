@@ -3,10 +3,13 @@ import {useSelector} from "react-redux";
 
 const MessageList = () => {
     const messages = useSelector(state => state.message);
+    const currentChannelId = useSelector(state => state.channelsInfo.currentChannelId);
 
-    const messagesContent = Object.entries(messages).map(([k, v]) => (
-        <div key={k} className="text-break mb-2"><b>{v.username}</b>: {v.body}</div>
-    ))
+    const messagesContent = Object.entries(messages)
+        .filter(([k, v]) => v.channelId === currentChannelId)
+        .map(([k, v]) => (
+            <div key={k} className="text-break mb-2"><b>{v.username}</b>: {v.body}</div>
+        ))
 
     const count = Object.keys(messages).length;
 

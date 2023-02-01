@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import {useEffect} from "react";
 import axios from "axios";
 import {useDispatch} from "react-redux";
-import {channelAdd} from "./slices/channelSlice";
+import {channelAdd, setCurrentChannel} from "./slices/channelSlice";
 import ChannelList from "./ChannelList";
 import MessageList from "./MessageList";
 import {messageAdd} from "./slices/messageSlice";
@@ -24,10 +24,9 @@ const Chat = () => {
     useEffect(() => {
         const fetchContent = async () => {
             const {data} = await axios.get('/api/v1/data', {headers: getAuthHeader()});
-            data.channels.forEach((channel) => {
-                dispatch(channelAdd(channel));
-            })
+            data.channels.forEach((channel) => dispatch(channelAdd(channel)));
             data.messages.forEach((message) => dispatch(messageAdd(message)));
+            dispatch(setCurrentChannel(data.currentChannelId));
         };
         fetchContent();
     }, [dispatch]);
