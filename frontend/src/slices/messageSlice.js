@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {channelRemove} from './channelSlice';
 import _ from 'lodash';
 
 const initialState = {};
@@ -15,6 +16,13 @@ const messageSlice = createSlice({
             const id = action.payload;
             state = _.omit(state, [id]);
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(channelRemove, (state, action) => {
+            const channelId = action.payload;
+            state = _.omitBy(state, (v, k) => v.channelId === channelId)
+            return state;
+        })
     }
 });
 

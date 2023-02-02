@@ -1,9 +1,11 @@
 import {useSelector, useDispatch} from "react-redux";
-import Nav from 'react-bootstrap/Nav';
 import Button from "react-bootstrap/Button";
+import Dropdown from "react-bootstrap/Dropdown";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 import React from "react";
 import {PlusSquare} from "react-bootstrap-icons";
 import {setCurrentChannel} from "./slices/channelSlice";
+import {showAddChannelModal, showRenameChannelModal, showDeleteChannelModal} from './slices/uiSlice'
 
 const Channel = ({
                      channel,
@@ -15,18 +17,41 @@ const Channel = ({
     const variant = isCurrent ? 'secondary' : null;
 
     return (
-        <li key={channel.id} className="nav-item w-100">
-            <Button
-                type="button"
-                variant={variant}
-                key={channel.id}
-                className="w-100 rounded-0 text-start"
-                onClick={handleChoose}
-            >
-                <span className="me-1">#</span>
-                {channel.name}
-            </Button>
-        </li>
+        channel.removable ?
+            (<Dropdown as={ButtonGroup} className="d-flex">
+                    <Button
+                        type="button"
+                        key={channel.id}
+                        className="w-100 rounded-0 text-start text-truncate"
+                        onClick={handleChoose}
+                        variant={variant}
+                    >
+                        <span className="me-1">#</span>
+                        {channel.name}
+                    </Button>
+                    <Dropdown.Toggle split className="flex-grow-0" variant={variant}>
+                        <span className="visually-hidden">Управление каналом</span>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={handleRemove(channel)}>Удалить</Dropdown.Item>
+                        <Dropdown.Item onClick={handleRename(channel)}>Переименовать</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            )
+            : (
+                <li key={channel.id} className="nav-item w-100">
+                    <Button
+                        type="button"
+                        variant={variant}
+                        key={channel.id}
+                        className="w-100 rounded-0 text-start"
+                        onClick={handleChoose}
+                    >
+                        <span className="me-1">#</span>
+                        {channel.name}
+                    </Button>
+                </li>
+            )
     )
 };
 
@@ -35,17 +60,20 @@ const ChannelList = () => {
     const dispatch = useDispatch();
     const {channels, currentChannelId} = useSelector(state => state.channelsInfo);
 
-    const channelsArray = Object.entries(channels).map(([k, v]) => v);
+    const channelsArray = Object.values(channels);
 
     const handleChooseChannel = (channelId) => () => {
         dispatch(setCurrentChannel(channelId));
     };
 
     const handleAddChannel = () => {
+        dispatch(showAddChannelModal());
     };
-    const handleRemoveChannel = (channelId) => () => {
+    const handleRemoveChannel = (channel) => () => {
+        dispatch(showDeleteChannelModal(channel))
     };
-    const handleRenameChannel = (channelId) => () => {
+    const handleRenameChannel = (channel) => () => {
+        dispatch(showRenameChannelModal(channel))
     };
 
     return (
