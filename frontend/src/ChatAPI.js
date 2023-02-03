@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
 import {createContext} from "react";
 import io from 'socket.io-client'
 import {messageAdd} from "./slices/messageSlice";
@@ -8,6 +8,7 @@ import {channelAdd,
     channelRename,
     channelRemove,
     resetCurrentChannelId} from "./slices/channelSlice";
+import AuthContext from "./contexts/AuthContext";
 
 const ApiContext = createContext({});
 const socket = io();
@@ -16,10 +17,11 @@ const ApiProvider = ({children}) => {
 
     const dispatch = useDispatch();
     const currentChannelId = useSelector(state => state.channelsInfo.currentChannelId);
+    const auth = useContext(AuthContext);
 
     const sendMessage = (message, sendCallback) => {
         socket.emit('newMessage',
-            {'body': message, 'channelId': currentChannelId, 'username': 'admin'},
+            {'body': message, 'channelId': currentChannelId, 'username': auth.currUser.username},
             (response) => {
                 if (response.status === 'ok') {
                     sendCallback();
