@@ -8,16 +8,23 @@ import Alert from 'react-bootstrap/Alert';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import {useNavigate, Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useContext, useEffect, useRef, useState} from "react";
 import AuthContext from "./contexts/AuthContext";
 
 const SignupSchema = Yup.object().shape({
-    username: Yup.string().required(),
-    password: Yup.string().required(),
+    username: Yup.string()
+        .required('Обязательное поле\n')
+        .min(3, 'От 3 до 20 символов')
+        .max(20, 'От 3 до 20 символов'),
+    password: Yup.string()
+        .required('Обязательное поле\n')
+        .min(6, 'От 6 символов'),
+    passwordConfirm: Yup.string()
+        .oneOf([Yup.ref('password')], 'Пароли должны совпадать')
 });
 
-const Login = () => {
+const Signup = () => {
     const inputEl = useRef(null);
     const navigate = useNavigate();
     const [showError, setShowError] = useState(false);
@@ -27,22 +34,26 @@ const Login = () => {
         inputEl.current.focus();
     })
 
-
     const formik = useFormik({
         initialValues: {
             username: '',
-            password: ''
+            password: '',
+            passwordConfirm: ''
         },
         onSubmit: values => {
-            axios.post('/api/v1/login', {
+            axios.post('/api/v1/signup', {
                 username: values.username,
                 password: values.password
             }).then((response) => {
-                setShowError(false);
-                auth.logIn({username: response.data.username, token: response.data.token});
-                navigate("/");
-            }).catch((response) => {
-                setShowError(true);
+                if (response.status === 201) {
+                    setShowError(false);
+                    auth.logIn({username: response.data.username, token: response.data.token});
+                    navigate("/");
+                }
+            }).catch((error) => {
+                if (error.response.status === 409) {
+                    setShowError(true);
+                }
             });
         },
         validationSchema: SignupSchema
@@ -52,10 +63,10 @@ const Login = () => {
         <Container className="mt-4">
             <Row className="justify-content-center">
                 <Col className="col-12 col-sm-auto">
-                    <Form onSubmit={formik.handleSubmit}>
-                        <h1 className="text-center mb-4">Войти</h1>
+                    <Form noValidate={true} onSubmit={formik.handleSubmit}>
+                        <h1 className="text-center mb-4">Регистрация</h1>
                         <div>
-                            {showError ? <Alert variant="danger"> Неверные имя пользователя или пароль </Alert> : ''}
+                            {showError ? <Alert variant="danger">Такой пользователь уже существует</Alert> : ''}
                         </div>
 
                         <Form.Group className="mb-3">
@@ -93,11 +104,26 @@ const Login = () => {
                             </FloatingLabel>
                         </Form.Group>
 
-                        <Button variant="primary" type="submit" className="col-12">
-                            Войти
-                        </Button>
+                        <Form.Group className="mb-3">
+                            <FloatingLabel label="Подтвердите пароль" className="mb-3">
+                                <Form.Control type="password"
+                                              placeholder="Подтвердите пароль"
+                                              id="passwordConfirm"
+                                              name="passwordConfirm"
+                                              onChange={formik.handleChange}
+                                              value={formik.values.passwordConfirm}
+                                              isInvalid={!!formik.errors.passwordConfirm}
+                                              autoComplete="on"
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {formik.errors.passwordConfirm}
+                                </Form.Control.Feedback>
+                            </FloatingLabel>
+                        </Form.Group>
 
-                        <div className="text-center mb-4">Нет аккаунта? <Link to="/signup">Регистрация</Link></div>
+                        <Button variant="primary" type="submit" className="col-12">
+                            Зарегистрироваться
+                        </Button>
                     </Form>
                 </Col>
             </Row>
@@ -105,4 +131,4 @@ const Login = () => {
     );
 }
 
-export default Login;
+export default Signup;

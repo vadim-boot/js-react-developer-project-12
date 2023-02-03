@@ -64,7 +64,6 @@ const ChannelRename = () => {
                             onChange={f.handleChange}
                             onBlur={f.handleBlur}
                             value={f.values.name}
-                            data-testid="input-body"
                             name="name"
                             isInvalid={!!f.errors.name}
                             ref={inputEl}

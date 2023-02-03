@@ -9,29 +9,24 @@ import ChannelList from "./ChannelList";
 import MessageList from "./MessageList";
 import {messageAdd} from "./slices/messageSlice";
 import ModalService from "./modals/ModalService";
-
-const getAuthHeader = () => {
-    const token = localStorage.getItem('jwt');
-
-    if (token) {
-        return {Authorization: `Bearer ${token}`};
-    }
-
-    return {};
-};
+import AuthContext from "./contexts/AuthContext";
+import {useContext} from "react";
 
 const Chat = () => {
     const dispatch = useDispatch();
+    const auth = useContext(AuthContext);
+
     useEffect(() => {
+        const headers = {Authorization: `Bearer ${auth.currUser.token}`};
         const fetchContent = async () => {
-            const {data} = await axios.get('/api/v1/data', {headers: getAuthHeader()});
+            const {data} = await axios.get('/api/v1/data', {headers});
             data.channels.forEach((channel) => dispatch(channelAdd(channel)));
             data.messages.forEach((message) => dispatch(messageAdd(message)));
             dispatch(setCurrentChannel(data.currentChannelId));
             dispatch(setDefaultChannelId(data.currentChannelId));
         };
         fetchContent();
-    }, [dispatch]);
+    }, [dispatch, auth.currUser.token]);
 
     return (
         <div>
