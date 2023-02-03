@@ -29,7 +29,7 @@ const ChannelRename = () => {
 
     useEffect(() => {
         inputEl.current.focus();
-    });
+    }, []);
 
     const f = useFormik({
         initialValues: channelToRename,

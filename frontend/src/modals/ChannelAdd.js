@@ -28,7 +28,7 @@ const ChannelAdd = () => {
 
     useEffect(() => {
         inputEl.current.focus();
-    });
+    },[]);
 
     const f = useFormik({
         initialValues: {name: ''},

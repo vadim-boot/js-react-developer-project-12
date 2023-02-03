@@ -32,7 +32,7 @@ const Signup = () => {
 
     useEffect(()=>{
         inputEl.current.focus();
-    })
+    }, [])
 
     const formik = useFormik({
         initialValues: {
