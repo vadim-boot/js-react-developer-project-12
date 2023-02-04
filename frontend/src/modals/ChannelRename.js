@@ -7,17 +7,7 @@ import {closeModal} from '../slices/uiSlice'
 import {useContext, useEffect, useRef} from "react";
 import {ApiContext} from "../ChatAPI";
 import * as Yup from "yup";
-
-const validationSchema = (names) => {
-    return Yup.object().shape({
-        name: Yup.string()
-            .required('Обязательное поле')
-            .min(3, 'От 3 до 20 символов')
-            .max(20, 'От 3 до 20 символов')
-            .test('Уникальный канал', 'Должно быть уникальным', value => !names.includes(value))
-    })
-};
-
+import {useTranslation} from "react-i18next";
 
 const ChannelRename = () => {
     const inputEl = useRef(null);
@@ -26,10 +16,21 @@ const ChannelRename = () => {
     const channels = useSelector(state => state.channelsInfo.channels);
     const channelToRename = useSelector(state => state.ui.currentChannel);
     const channelsNames = Object.values(channels).filter(c => c.id !== channelToRename.id).map(c => c.name);
+    const {t} = useTranslation();
 
     useEffect(() => {
         inputEl.current.focus();
     }, []);
+
+    const validationSchema = (names) => {
+        return Yup.object().shape({
+            name: Yup.string()
+                .required(t('channelModal.nameReq'))
+                .min(3, t('channelModal.nameLength'))
+                .max(20, t('channelModal.nameLength'))
+                .test(t('channelModal.nameTestName'), t('channelModal.nameTestMsg'), value => !names.includes(value))
+        })
+    };
 
     const f = useFormik({
         initialValues: channelToRename,
@@ -52,7 +53,7 @@ const ChannelRename = () => {
             keyboard={true}
             onEscapeKeyDown={onHide}>
             <Modal.Header closeButton onHide={onHide}>
-                <Modal.Title>Переименовать канал</Modal.Title>
+                <Modal.Title>{t('channelModal.renameHead')}</Modal.Title>
             </Modal.Header>
 
             <Modal.Body>
@@ -67,6 +68,7 @@ const ChannelRename = () => {
                             name="name"
                             isInvalid={!!f.errors.name}
                             ref={inputEl}
+                            autoComplete="off"
                         />
                         <Form.Control.Feedback type="invalid">
                             {f.errors.name}
@@ -76,10 +78,10 @@ const ChannelRename = () => {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onHide}>
-                    Отменить
+                    {t('channelModal.btCancel')}
                 </Button>
                 <Button variant="primary" onClick={f.handleSubmit}>
-                    Отправить
+                    {t('channelModal.btSubmit')}
                 </Button>
             </Modal.Footer>
         </Modal>

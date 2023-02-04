@@ -43,6 +43,7 @@ const MessageSendForm = () => {
                                   value={formik.values.messageBody}
                                   disabled={!sendOk}
                                   ref={inputRef}
+                                  autoComplete="off"
                     />
                     <Button className="btn-group-vertical"
                             type="submit"

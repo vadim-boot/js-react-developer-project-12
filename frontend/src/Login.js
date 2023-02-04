@@ -11,22 +11,23 @@ import axios from 'axios';
 import {useNavigate, Link} from "react-router-dom";
 import {useContext, useEffect, useRef, useState} from "react";
 import AuthContext from "./contexts/AuthContext";
-
-const SignupSchema = Yup.object().shape({
-    username: Yup.string().required(),
-    password: Yup.string().required(),
-});
+import {useTranslation} from "react-i18next";
 
 const Login = () => {
     const inputEl = useRef(null);
     const navigate = useNavigate();
     const [showError, setShowError] = useState(false);
     const auth = useContext(AuthContext);
+    const {t} = useTranslation();
 
     useEffect(()=>{
         inputEl.current.focus();
     }, [])
 
+    const SignupSchema = Yup.object().shape({
+        username: Yup.string().required(t('loginForm.reqField')),
+        password: Yup.string().required(t('loginForm.reqField')),
+    });
 
     const formik = useFormik({
         initialValues: {
@@ -53,15 +54,15 @@ const Login = () => {
             <Row className="justify-content-center">
                 <Col className="col-12 col-sm-auto">
                     <Form onSubmit={formik.handleSubmit}>
-                        <h1 className="text-center mb-4">Войти</h1>
+                        <h1 className="text-center mb-4">{t('loginForm.header')}</h1>
                         <div>
-                            {showError ? <Alert variant="danger"> Неверные имя пользователя или пароль </Alert> : ''}
+                            {showError ? <Alert variant="danger"> {t('loginForm.error')} </Alert> : ''}
                         </div>
 
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Ваш ник" className="mb-3">
+                            <FloatingLabel label={t('loginForm.yourName')} className="mb-3">
                                 <Form.Control type="text"
-                                              placeholder="Ваш ник"
+                                              placeholder={t('loginForm.yourName')}
                                               id="username"
                                               name="username"
                                               onChange={formik.handleChange}
@@ -77,9 +78,9 @@ const Login = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Пароль" className="mb-3">
+                            <FloatingLabel label={t('loginForm.password')} className="mb-3">
                                 <Form.Control type="password"
-                                              placeholder="Пароль"
+                                              placeholder={t('loginForm.password')}
                                               id="password"
                                               name="password"
                                               onChange={formik.handleChange}
@@ -94,10 +95,10 @@ const Login = () => {
                         </Form.Group>
 
                         <Button variant="primary" type="submit" className="col-12">
-                            Войти
+                            {t('loginForm.enter')}
                         </Button>
 
-                        <div className="text-center mb-4">Нет аккаунта? <Link to="/signup">Регистрация</Link></div>
+                        <div className="text-center mb-4">{t('loginForm.noAcc')} <Link to="/signup">{t('loginForm.regAcc')}</Link></div>
                     </Form>
                 </Col>
             </Row>

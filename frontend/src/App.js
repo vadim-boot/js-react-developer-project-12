@@ -8,6 +8,20 @@ import {ApiProvider} from "./ChatAPI";
 import Signup from "./Signup";
 import AuthContext from "./contexts/AuthContext";
 import {useContext, useState} from "react";
+import resources from './locales/index';
+import i18next from "i18next";
+import {initReactI18next} from "react-i18next";
+
+i18next
+    .use(initReactI18next)
+    .init({
+        resources,
+        lng: "ru",
+        fallbackLng: "ru",
+    }).catch(e => {
+        console.log(`i18n error = ${e}`);
+    }
+);
 
 const PrivateRoute = ({children}) => {
     const location = useLocation();

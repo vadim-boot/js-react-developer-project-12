@@ -8,16 +8,7 @@ import {useContext, useEffect} from "react";
 import {ApiContext} from "../ChatAPI";
 import * as Yup from "yup";
 import {useRef} from "react";
-
-const validationSchema = (names) => {
-    return Yup.object().shape({
-        name: Yup.string()
-            .required('Обязательное поле')
-            .min(3, 'От 3 до 20 символов')
-            .max(20, 'От 3 до 20 символов')
-            .test('Уникальный канал', 'Должно быть уникальным', value => !names.includes(value))
-    })
-};
+import {useTranslation} from "react-i18next";
 
 const ChannelAdd = () => {
     const inputEl = useRef(null);
@@ -25,10 +16,21 @@ const ChannelAdd = () => {
     const {addChannel} = useContext(ApiContext)
     const channels = useSelector(state => state.channelsInfo.channels);
     const channelsNames = Object.values(channels).map(c => c.name);
+    const {t} = useTranslation();
 
     useEffect(() => {
         inputEl.current.focus();
     },[]);
+
+    const validationSchema = (names) => {
+        return Yup.object().shape({
+            name: Yup.string()
+                .required(t('channelModal.nameReq'))
+                .min(3, t('channelModal.nameLength'))
+                .max(20, t('channelModal.nameLength'))
+                .test(t('channelModal.nameTestName'), t('channelModal.nameTestMsg'), value => !names.includes(value))
+        })
+    };
 
     const f = useFormik({
         initialValues: {name: ''},
@@ -43,15 +45,13 @@ const ChannelAdd = () => {
         dispatch(closeModal());
     };
 
-    // const
-
     return (
         <Modal
             show
             keyboard={true}
             onEscapeKeyDown={onHide}>
             <Modal.Header closeButton onHide={onHide}>
-                <Modal.Title>Добавить канал</Modal.Title>
+                <Modal.Title>{t('channelModal.addHead')}</Modal.Title>
             </Modal.Header>
 
             <Modal.Body>
@@ -66,6 +66,7 @@ const ChannelAdd = () => {
                             name="name"
                             isInvalid={!!f.errors.name}
                             ref={inputEl}
+                            autoComplete="off"
                         />
                         <Form.Control.Feedback type="invalid">
                             {f.errors.name}
@@ -75,10 +76,10 @@ const ChannelAdd = () => {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onHide}>
-                    Отменить
+                    {t('channelModal.btCancel')}
                 </Button>
                 <Button variant="primary" onClick={f.handleSubmit}>
-                    Отправить
+                    {t('channelModal.btSubmit')}
                 </Button>
             </Modal.Footer>
         </Modal>

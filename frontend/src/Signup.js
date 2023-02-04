@@ -11,28 +11,31 @@ import axios from 'axios';
 import {useNavigate} from "react-router-dom";
 import {useContext, useEffect, useRef, useState} from "react";
 import AuthContext from "./contexts/AuthContext";
+import {useTranslation} from "react-i18next";
 
-const SignupSchema = Yup.object().shape({
-    username: Yup.string()
-        .required('Обязательное поле\n')
-        .min(3, 'От 3 до 20 символов')
-        .max(20, 'От 3 до 20 символов'),
-    password: Yup.string()
-        .required('Обязательное поле\n')
-        .min(6, 'От 6 символов'),
-    passwordConfirm: Yup.string()
-        .oneOf([Yup.ref('password')], 'Пароли должны совпадать')
-});
 
 const Signup = () => {
     const inputEl = useRef(null);
     const navigate = useNavigate();
     const [showError, setShowError] = useState(false);
     const auth = useContext(AuthContext);
+    const {t} = useTranslation();
 
     useEffect(()=>{
         inputEl.current.focus();
     }, [])
+
+    const SignupSchema = Yup.object().shape({
+        username: Yup.string()
+            .required(t('signupForm.reqField'))
+            .min(3, t('signupForm.usernameLength'))
+            .max(20, t('signupForm.usernameLength')),
+        password: Yup.string()
+            .required(t('signupForm.reqField'))
+            .min(6, t('signupForm.passLength')),
+        passwordConfirm: Yup.string()
+            .oneOf([Yup.ref('password')], t('signupForm.passCheck'))
+    });
 
     const formik = useFormik({
         initialValues: {
@@ -64,15 +67,15 @@ const Signup = () => {
             <Row className="justify-content-center">
                 <Col className="col-12 col-sm-auto">
                     <Form noValidate={true} onSubmit={formik.handleSubmit}>
-                        <h1 className="text-center mb-4">Регистрация</h1>
+                        <h1 className="text-center mb-4">{t('signupForm.header')}</h1>
                         <div>
-                            {showError ? <Alert variant="danger">Такой пользователь уже существует</Alert> : ''}
+                            {showError ? <Alert variant="danger">{t('signupForm.error')}</Alert> : ''}
                         </div>
 
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Ваш ник" className="mb-3">
+                            <FloatingLabel label={t('signupForm.yourName')} className="mb-3">
                                 <Form.Control type="text"
-                                              placeholder="Ваш ник"
+                                              placeholder={t('signupForm.yourName')}
                                               id="username"
                                               name="username"
                                               onChange={formik.handleChange}
@@ -88,9 +91,9 @@ const Signup = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Пароль" className="mb-3">
+                            <FloatingLabel label={t('signupForm.password')} className="mb-3">
                                 <Form.Control type="password"
-                                              placeholder="Пароль"
+                                              placeholder={t('signupForm.password')}
                                               id="password"
                                               name="password"
                                               onChange={formik.handleChange}
@@ -105,9 +108,9 @@ const Signup = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <FloatingLabel label="Подтвердите пароль" className="mb-3">
+                            <FloatingLabel label={t('signupForm.passwordConfirm')} className="mb-3">
                                 <Form.Control type="password"
-                                              placeholder="Подтвердите пароль"
+                                              placeholder={t('signupForm.passwordConfirm')}
                                               id="passwordConfirm"
                                               name="passwordConfirm"
                                               onChange={formik.handleChange}
@@ -122,7 +125,7 @@ const Signup = () => {
                         </Form.Group>
 
                         <Button variant="primary" type="submit" className="col-12">
-                            Зарегистрироваться
+                            {t('signupForm.signUp')}
                         </Button>
                     </Form>
                 </Col>

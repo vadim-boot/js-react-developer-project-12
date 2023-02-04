@@ -6,6 +6,7 @@ import React from "react";
 import {PlusSquare} from "react-bootstrap-icons";
 import {setCurrentChannel} from "./slices/channelSlice";
 import {showAddChannelModal, showRenameChannelModal, showDeleteChannelModal} from './slices/uiSlice'
+import {useTranslation} from "react-i18next";
 
 const Channel = ({
                      channel,
@@ -13,6 +14,7 @@ const Channel = ({
                      handleChoose,
                      handleRemove,
                      handleRename,
+                     t
                  }) => {
     const variant = isCurrent ? 'secondary' : null;
 
@@ -30,11 +32,11 @@ const Channel = ({
                         {channel.name}
                     </Button>
                     <Dropdown.Toggle split className="flex-grow-0" variant={variant}>
-                        <span className="visually-hidden">Управление каналом</span>
+                        <span className="visually-hidden">{t('chat.channelList.manage')}</span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                        <Dropdown.Item onClick={handleRemove(channel)}>Удалить</Dropdown.Item>
-                        <Dropdown.Item onClick={handleRename(channel)}>Переименовать</Dropdown.Item>
+                        <Dropdown.Item onClick={handleRemove(channel)}>{t('chat.channelList.delete')}</Dropdown.Item>
+                        <Dropdown.Item onClick={handleRename(channel)}>{t('chat.channelList.rename')}</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             )
@@ -59,6 +61,7 @@ const ChannelList = () => {
 
     const dispatch = useDispatch();
     const {channels, currentChannelId} = useSelector(state => state.channelsInfo);
+    const {t} = useTranslation();
 
     const channelsArray = Object.values(channels);
 
@@ -79,7 +82,7 @@ const ChannelList = () => {
     return (
         <>
             <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
-                <span>Каналы</span>
+                <span>{t('chat.channelList.head')}</span>
                 <Button
                     type="button"
                     variant="group-vertical"
@@ -99,6 +102,7 @@ const ChannelList = () => {
                         handleChoose={handleChooseChannel(channel.id)}
                         handleRemove={handleRemoveChannel}
                         handleRename={handleRenameChannel}
+                        t={t}
                     />
                 ))}
             </ul>

@@ -4,11 +4,13 @@ import Modal from 'react-bootstrap/Modal';
 import Button from "react-bootstrap/Button";
 import {useContext} from "react";
 import {ApiContext} from "../ChatAPI";
+import {useTranslation} from "react-i18next";
 
 const ChannelDelete = () => {
     const dispatch = useDispatch();
     const channelToDelete = useSelector(state => state.ui.currentChannel);
     const {deleteChannel} = useContext(ApiContext)
+    const {t} = useTranslation();
 
     const onHide = () => {
         dispatch(closeModal());
@@ -25,20 +27,19 @@ const ChannelDelete = () => {
             keyboard={true}
             onEscapeKeyDown={onHide}>
             <Modal.Header closeButton onHide={onHide}>
-                <Modal.Title>Удалить канал </Modal.Title>
+                <Modal.Title>{t('channelModal.delHead')}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p className="lead">Уверены?</p>
+                <p className="lead">{t('channelModal.delMsg')}</p>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onHide}>
-                    Отменить
+                    {t('channelModal.btCancel')}
                 </Button>
                 <Button variant="danger" onClick={onDelete}>
-                    Удалить
+                    {t('channelModal.btSubmit')}
                 </Button>
             </Modal.Footer>
-
         </Modal>
     );
 }
