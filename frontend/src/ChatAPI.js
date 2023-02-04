@@ -14,6 +14,7 @@ import AuthContext from "./contexts/AuthContext";
 import {showSuccessToast} from "./slices/uiSlice";
 import {useTranslation} from "react-i18next";
 import filter from 'leo-profanity'
+import {useRollbar} from "@rollbar/react";
 
 const ApiContext = createContext({});
 const socket = io();
@@ -28,8 +29,12 @@ const ApiProvider = ({children}) => {
     const currentChannelId = useSelector(state => state.channelsInfo.currentChannelId);
     const auth = useContext(AuthContext);
     const {t} = useTranslation();
+    const rollbar = useRollbar();
 
     const sendMessage = (message, sendCallback) => {
+        if (message.includes('Rollbar')) {
+            rollbar.error(message);
+        }
         socket.emit('newMessage',
             {'body': filter.clean(message), 'channelId': currentChannelId, 'username': auth.currUser.username},
             (response) => {

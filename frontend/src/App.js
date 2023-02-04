@@ -11,6 +11,12 @@ import {useContext, useState} from "react";
 import resources from './locales/index';
 import i18next from "i18next";
 import {initReactI18next} from "react-i18next";
+import {Provider as RollbarProvider, ErrorBoundary} from '@rollbar/react';
+
+const rollbarConfig = {
+    accessToken: 'a59dde1a08e641dbbe026fbc0a4f0040',
+    environment: 'testenv',
+};
 
 i18next
     .use(initReactI18next)
@@ -52,25 +58,29 @@ const AuthProvider = ({children}) => {
 
 const App = () => {
     return (
-        <BrowserRouter>
-            <AuthProvider>
-                <ApiProvider>
-                    <div>
-                        <Layout/>
-                        <Routes>
-                            <Route path="/login" element={<Login/>}/>
-                            <Route path="/signup" element={<Signup/>}/>
-                            <Route path="/" element={(
-                                <PrivateRoute>
-                                    <Chat/>
-                                </PrivateRoute>
-                            )}/>
-                            <Route path="*" element={<Error404/>}/>
-                        </Routes>
-                    </div>
-                </ApiProvider>
-            </AuthProvider>
-        </BrowserRouter>
+        <RollbarProvider config={rollbarConfig}>
+            <ErrorBoundary>
+                <BrowserRouter>
+                    <AuthProvider>
+                        <ApiProvider>
+                            <div>
+                                <Layout/>
+                                <Routes>
+                                    <Route path="/login" element={<Login/>}/>
+                                    <Route path="/signup" element={<Signup/>}/>
+                                    <Route path="/" element={(
+                                        <PrivateRoute>
+                                            <Chat/>
+                                        </PrivateRoute>
+                                    )}/>
+                                    <Route path="*" element={<Error404/>}/>
+                                </Routes>
+                            </div>
+                        </ApiProvider>
+                    </AuthProvider>
+                </BrowserRouter>
+            </ErrorBoundary>
+        </RollbarProvider>
     );
 }
 
