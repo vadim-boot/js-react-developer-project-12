@@ -1,4 +1,4 @@
-export default {
+const en = {
     translation: {
         // BEGIN (write your solution here)
         languages: {
@@ -55,3 +55,5 @@ export default {
         }
     },
 };
+
+export default en;
