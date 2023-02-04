@@ -13,9 +13,14 @@ import {
 import AuthContext from "./contexts/AuthContext";
 import {showSuccessToast} from "./slices/uiSlice";
 import {useTranslation} from "react-i18next";
+import filter from 'leo-profanity'
 
 const ApiContext = createContext({});
 const socket = io();
+
+filter.clearList()
+filter.add(filter.getDictionary('en'));
+filter.add(filter.getDictionary('ru'));
 
 const ApiProvider = ({children}) => {
 
@@ -26,7 +31,7 @@ const ApiProvider = ({children}) => {
 
     const sendMessage = (message, sendCallback) => {
         socket.emit('newMessage',
-            {'body': message, 'channelId': currentChannelId, 'username': auth.currUser.username},
+            {'body': filter.clean(message), 'channelId': currentChannelId, 'username': auth.currUser.username},
             (response) => {
                 if (response.status === 'ok') {
                     sendCallback();
