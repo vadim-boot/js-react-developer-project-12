@@ -3,12 +3,16 @@ import {createContext} from "react";
 import io from 'socket.io-client'
 import {messageAdd} from "./slices/messageSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {channelAdd,
+import {
+    channelAdd,
     setCurrentChannel,
     channelRename,
     channelRemove,
-    resetCurrentChannelId} from "./slices/channelSlice";
+    resetCurrentChannelId,
+} from "./slices/channelSlice";
 import AuthContext from "./contexts/AuthContext";
+import {showSuccessToast} from "./slices/uiSlice";
+import {useTranslation} from "react-i18next";
 
 const ApiContext = createContext({});
 const socket = io();
@@ -18,6 +22,7 @@ const ApiProvider = ({children}) => {
     const dispatch = useDispatch();
     const currentChannelId = useSelector(state => state.channelsInfo.currentChannelId);
     const auth = useContext(AuthContext);
+    const {t} = useTranslation();
 
     const sendMessage = (message, sendCallback) => {
         socket.emit('newMessage',
@@ -30,20 +35,31 @@ const ApiProvider = ({children}) => {
     };
 
     const addChannel = (name) => {
-        socket.emit('newChannel', {name}, ({data: {id}}) => {
-            dispatch(setCurrentChannel(id));
+        socket.emit('newChannel', {name}, ({status, data: {id}}) => {
+            if (status === 'ok') {
+                dispatch(setCurrentChannel(id));
+                dispatch(showSuccessToast(t('toast.channelAdded')))
+            }
         });
     }
 
     const renameChannel = (channel) => {
-        socket.emit('renameChannel', channel);
+        socket.emit('renameChannel', channel, ({status}) => {
+            if (status === 'ok') {
+                dispatch(showSuccessToast(t('toast.channelRenamed')));
+            }
+        });
     }
 
     const deleteChannel = (channel) => {
         if (channel.id === currentChannelId) {
             dispatch(resetCurrentChannelId());
         }
-        socket.emit('removeChannel', {id: channel.id});
+        socket.emit('removeChannel', {id: channel.id}, ({status}) => {
+            if (status === 'ok') {
+                dispatch(showSuccessToast(t('toast.channelDeleted')));
+            }
+        });
     }
 
     useEffect(() => {

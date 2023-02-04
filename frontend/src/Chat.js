@@ -11,10 +11,14 @@ import {messageAdd} from "./slices/messageSlice";
 import ModalService from "./modals/ModalService";
 import AuthContext from "./contexts/AuthContext";
 import {useContext} from "react";
+import {ToastContainer} from "react-toastify";
+import {showErrorToast} from "./slices/uiSlice";
+import {useTranslation} from "react-i18next";
 
 const Chat = () => {
     const dispatch = useDispatch();
     const auth = useContext(AuthContext);
+    const {t} = useTranslation();
 
     useEffect(() => {
         const headers = {Authorization: `Bearer ${auth.currUser.token}`};
@@ -25,8 +29,12 @@ const Chat = () => {
             dispatch(setCurrentChannel(data.currentChannelId));
             dispatch(setDefaultChannelId(data.currentChannelId));
         };
-        fetchContent();
-    }, [dispatch, auth.currUser.token]);
+        try {
+            fetchContent();
+        } catch (error){
+            dispatch(showErrorToast(t('toast.dataLoadError')));
+        }
+    }, [t, dispatch, auth.currUser.token]);
 
     return (
         <div>
@@ -41,6 +49,7 @@ const Chat = () => {
                 </Row>
             </Container>
             <ModalService/>
+            <ToastContainer/>
         </div>
     );
 };

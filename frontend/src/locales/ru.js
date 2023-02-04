@@ -4,6 +4,12 @@ const ru = {
             en: 'English',
             ru: 'Русский',
         },
+        toast: {
+            dataLoadError: 'Ошибка загрузки данных',
+            channelAdded: 'Канал создан',
+            channelRenamed: 'Канала переименован',
+            channelDeleted: 'Канал удален'
+        },
         chat: {
             logout: 'Выйти',
             msgList: {

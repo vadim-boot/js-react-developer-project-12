@@ -5,6 +5,12 @@ const en = {
             en: 'English',
             ru: 'Русский',
         },
+        toast: {
+            dataLoadError: 'Data loading problem',
+            channelAdded: 'Channel created',
+            channelRenamed: 'Channel renamed',
+            channelDeleted: 'Channel deleted'
+        },
         chat: {
             logout: 'Logout',
             msgList: {
